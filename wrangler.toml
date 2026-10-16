@@ -1,0 +1,29 @@
+﻿# 小窝 · 共栖园（Coexist Garden）· wrangler 配置
+# 作者：世x珺 ｜ junyu3808@gmail.com ｜ MIT
+#
+# 这是「电脑部署」这条路用的配置（手机部署不需要这个文件）。
+# 用法：
+#   1) npx wrangler login
+#   2) npx wrangler kv namespace create NEST     ← 记下输出里的 id
+#   3) 把 id 填到下面 [[kv_namespaces]] 的 id 里（替换掉占位符）
+#   4) npx wrangler deploy
+#
+# 注意：binding 的名字必须是 NEST，因为 worker.js 里读的就是 env.NEST；
+#       改成别的名字，Worker 一跑起来就会说「没带密钥」，所有请求都 401。
+
+# Worker 名字。会变成你的地址前缀：https://<name>.<你的子域>.workers.dev
+name = "xiaowo-gongqi"
+
+# 入口文件：就是这个 Worker 的代码
+main = "worker.js"
+
+# 运行时兼容日期。用 2025 年内的任意一天都行，不用改
+compatibility_date = "2025-06-01"
+
+# KV 命名空间绑定：一个园子的所有留言 / 回复 / 图片都存在这里
+[[kv_namespaces]]
+binding = "NEST"                 # 必须是 NEST，和 worker.js 里的 env.NEST 对应
+id = "在这里填 kv namespace create 输出的 id"   # 形如 "a1b2c3d4e5f6478899aabbccddeeff00"
+
+# 如果以后想让别的 Worker / 脚本也能读这个园子的数据，再加一行 preview_id 或
+# 用第二个 [[kv_namespaces]] 段落绑定别的命名空间即可；单人使用不用管。
